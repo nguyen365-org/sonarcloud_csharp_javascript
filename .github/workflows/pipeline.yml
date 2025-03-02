@@ -53,6 +53,23 @@ jobs:
           } else {
               Write-Host "JavaScript coverage file found at: coverage\lcov.info"
           }
+      # SonarQube scan
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        with:
+          projectBaseDir: ${{ github.workspace }}
+          args: >
+            -Dsonar.projectKey=nguyen365-org_sonarcloud_csharp_javascript
+            -Dsonar.organization=nguyen365-org
+            -Dsonar.sources=WebApplication/Scripts
+            -Dsonar.tests=WebApplication/test
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.verbose=true
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: "https://sonarcloud.io"
+          SONAR_SCANNER_OPTS: "-Xmx1024m"
+
 
       - name: Start SonarCloud Analysis
         run: |
