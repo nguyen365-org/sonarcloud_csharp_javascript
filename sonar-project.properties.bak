@@ -1,0 +1,15 @@
+
+sonar.projectKey=nguyen365-build_sonarcloud_csharp_javascript
+sonar.organization=365nguyen
+sonar.host.url=https://sonarcloud.io
+
+# Source Directories
+sonar.sources=WebApplication/Scripts
+sonar.tests=WebApplication/Tests
+
+# C# Configuration
+sonar.cs.vstest.reportsPaths=TestResults/*.trx
+sonar.cs.opencover.reportsPaths=TestResults/coverage.opencover.xml
+
+# JavaScript Configuration
+sonar.javascript.lcov.reportPaths=coverage/lcov.info

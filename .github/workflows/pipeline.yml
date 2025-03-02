@@ -1,0 +1,112 @@
+name: Build Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: win_on_prem
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: 'latest'
+
+      - name: Restore NuGet packages
+        run: nuget restore SonarCloud.CSharp.JavaScript.sln
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install JavaScript dependencies
+        run: npm install
+        working-directory: WebApplication/Scripts
+
+      # Run Jest Tests & Generate Coverage Report (Outputs: ./coverage/lcov.info)
+      - name: Run Jest tests
+        run: npm test
+        working-directory: WebApplication/Scripts
+
+      - name: Verify Jest Coverage Report
+        shell: pwsh
+        run: |
+          if (!(Test-Path "coverage\lcov.info")) {
+              Write-Host "JavaScript coverage file NOT found!"
+              exit 1
+          } else {
+              Write-Host "JavaScript coverage file found at: coverage\lcov.info"
+          }
+
+      - name: Start SonarCloud Analysis
+        run: |
+          $sonarScannerPath = (Get-ChildItem -Path C:\ -Recurse -Filter "dotnet-sonarscanner.exe" -ErrorAction SilentlyContinue -File | Select-Object -First 1).FullName
+          $lcovInfoPath = (Get-ChildItem -Path . -Recurse -Filter "lcov.info" -ErrorAction SilentlyContinue -File | Select-Object -First 1).FullName
+          $sourcePath = Split-Path -Path (Split-Path -Path $lcovInfoPath -Parent) -Parent
+          Write-Host "sonarScannerPath found at: $sonarScannerPath"
+          Write-Host "lcovInfoPath found at: $lcovInfoPath"
+
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+          
+          # & $sonarScannerPath begin `
+          .\.sonar\scanner\dotnet-sonarscanner begin `
+          /k:"nguyen365-org_sonarcloud_csharp_javascript" `
+          /o:"nguyen365-org" `
+          /d:sonar.host.url="https://sonarcloud.io" `
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+          -d:sonar.exclusions="node_modules/**, **/*.config.js" `
+          -d:sonar.sources="$sourcePath" `
+          /d:sonar.cs.opencover.reportsPaths="coverage.opencover.xml" `
+          #/d:sonar.javascript.lcov.reportPaths="$lcovInfoPath" `
+          /d:sonar.scanner.scanAll=true `
+          -d:sonar.verbose=true
+
+      - name: Build Solution
+        run: msbuild SonarCloud.CSharp.JavaScript.sln /p:Configuration=Release
+
+      - name: Run Tests & Collect Coverage
+        shell: powershell
+        run: |
+          $currentDirectory = Get-Location
+          Write-Host "Current Directory: $currentDirectory"
+
+          # Find OpenCover and ReportGenerator
+          $openCoverPath = (Get-ChildItem -Path . -Recurse -Filter "OpenCover.Console.exe" -File | Select-Object -First 1).FullName
+          $reportGeneratorPath = (Get-ChildItem -Path . -Recurse -Filter "ReportGenerator.exe" -File | Where-Object { $_.FullName -match '\\net47\\' } | Select-Object -First 1).FullName
+          $vstestPath = (Get-ChildItem -Path C:\ -Recurse -Filter "vstest.console.exe" -ErrorAction SilentlyContinue -File | Select-Object -First 1).FullName
+
+          if (-not $openCoverPath) { Write-Host "OpenCover not found!"; exit 1 }
+          if (-not $reportGeneratorPath) { Write-Host "ReportGenerator not found!"; exit 1 }
+          if (-not $vstestPath) { Write-Host "vstest.console.exe not found! Install Visual Studio Test Platform."; exit 1 }
+
+          Write-Host "OpenCover found at: $openCoverPath"
+          Write-Host "ReportGenerator found at: $reportGeneratorPath"
+          Write-Host "vstest.console.exe found at: $vstestPath"
+
+          # Run OpenCover
+          & $openCoverPath -target:$vstestPath -targetargs:"WebApplication.Test\bin\Release\WebApplication.Test.dll" -register:user -excludebyattribute:*.ExcludeFromCodeCoverage* -output:coverage.opencover.xml
+
+          # Convert coverage report with ReportGenerator
+          & $reportGeneratorPath "-reports:coverage.opencover.xml" "-targetdir:TestResults" -reporttypes:Cobertura
+
+      - name: End SonarCloud Analysis
+        run: |
+            $sonarScannerPath = (Get-ChildItem -Path C:\ -Recurse -Filter "dotnet-sonarscanner.exe" -ErrorAction SilentlyContinue -File | Select-Object -First 1).FullName
+            .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
