@@ -74,9 +74,10 @@ jobs:
           -d:sonar.exclusions="node_modules/**, **/*.config.js" `
           -d:sonar.sources="$sourcePath" `
           /d:sonar.cs.opencover.reportsPaths="coverage.opencover.xml" `
-          #/d:sonar.javascript.lcov.reportPaths="$lcovInfoPath" `
           /d:sonar.scanner.scanAll=true `
           -d:sonar.verbose=true
+          #/d:sonar.javascript.lcov.reportPaths="$lcovInfoPath" `
+          
 
       - name: Build Solution
         run: msbuild SonarCloud.CSharp.JavaScript.sln /p:Configuration=Release
