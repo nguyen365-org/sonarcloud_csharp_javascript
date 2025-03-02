@@ -53,22 +53,22 @@ jobs:
           } else {
               Write-Host "JavaScript coverage file found at: coverage\lcov.info"
           }
-      # SonarQube scan
-      - name: SonarQube Scan JavaScript
-        uses: SonarSource/sonarqube-scan-action@v4
-        with:
-          projectBaseDir: ${{ github.workspace }}
-          args: >
-            -Dsonar.projectKey=nguyen365-org_sonarcloud_csharp_javascript
-            -Dsonar.organization=nguyen365-org
-            -Dsonar.sources=WebApplication/Scripts
-            -Dsonar.tests=WebApplication/Tests
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.verbose=true
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: "https://sonarcloud.io"
-          SONAR_SCANNER_OPTS: "-Xmx1024m"
+      # # SonarQube scan
+      # - name: SonarQube Scan JavaScript
+      #   uses: SonarSource/sonarqube-scan-action@v4
+      #   with:
+      #     projectBaseDir: ${{ github.workspace }}
+      #     args: >
+      #       -Dsonar.projectKey=nguyen365-org_sonarcloud_csharp_javascript
+      #       -Dsonar.organization=nguyen365-org
+      #       -Dsonar.sources=WebApplication/Scripts
+      #       -Dsonar.tests=WebApplication/Tests
+      #       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      #       -Dsonar.verbose=true
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: "https://sonarcloud.io"
+      #     SONAR_SCANNER_OPTS: "-Xmx1024m"
 
 
       - name: Start SonarCloud Analysis for .NET
@@ -88,12 +88,14 @@ jobs:
           /o:"nguyen365-org" `
           /d:sonar.host.url="https://sonarcloud.io" `
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-          -d:sonar.exclusions="node_modules/**, **/*.config.js" `
-          -d:sonar.sources="$sourcePath" `
           /d:sonar.cs.opencover.reportsPaths="coverage.opencover.xml" `
           /d:sonar.scanner.scanAll=true `
-          -d:sonar.verbose=true
-          #/d:sonar.javascript.lcov.reportPaths="$lcovInfoPath" `
+          /d:sonar.sources=WebApplication/Scripts `
+          /d:sonar.tests=WebApplication/Tests `
+          /d:sonar.javascript.lcov.reportPaths=coverage/lcov.info 
+          # -d:sonar.exclusions="node_modules/**, **/*.config.js" `
+          # -d:sonar.verbose=true
+          # /d:sonar.javascript.lcov.reportPaths="$lcovInfoPath" `
           
 
       - name: Build Solution
