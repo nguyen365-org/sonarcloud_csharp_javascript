@@ -40,9 +40,9 @@ jobs:
         working-directory: WebApplication/Scripts
 
       # Run Jest Tests & Generate Coverage Report (Outputs: ./coverage/lcov.info)
-      # - name: Run Jest tests
-      #   run: npm test
-      #   working-directory: WebApplication/Scripts
+      - name: Run Jest tests
+        run: npm test
+        working-directory: WebApplication/Scripts
 
       - name: Verify Jest Coverage Report
         shell: pwsh
@@ -52,6 +52,16 @@ jobs:
               exit 1
           } else {
               Write-Host "JavaScript coverage file found at: coverage\lcov.info"
+              # Read the file content
+              $content = Get-Content $coverageFile
+        
+              # Replace backslashes with forward slashes
+              $updatedContent = $content -replace '\\', '/'
+              
+              # Write the updated content back to the file
+              Set-Content $coverageFile $updatedContent
+              
+              Write-Host "File paths in coverage/lcov.info have been normalized."
           }
       # # SonarQube scan
       # - name: SonarQube Scan JavaScript
