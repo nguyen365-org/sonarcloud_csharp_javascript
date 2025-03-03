@@ -78,6 +78,7 @@ jobs:
           $sourcePath = Split-Path -Path (Split-Path -Path $lcovInfoPath -Parent) -Parent
           Write-Host "sonarScannerPath found at: $sonarScannerPath"
           Write-Host "lcovInfoPath found at: $lcovInfoPath"
+          Write-Host "sourcePath found at: $sourcePath"
 
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
@@ -90,9 +91,9 @@ jobs:
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.cs.opencover.reportsPaths="coverage.opencover.xml" `
           /d:sonar.scanner.scanAll=true `
-          /d:sonar.sources=WebApplication/Scripts `
-          /d:sonar.tests=WebApplication/Tests `
-          /d:sonar.javascript.lcov.reportPaths=coverage/lcov.info  `
+          /d:sonar.sources=WebApplication\Scripts `
+          /d:sonar.tests=WebApplication\Tests `
+          /d:sonar.javascript.lcov.reportPaths=$lcovInfoPath  `
           /d:sonar.exclusions="jest.config.js"
           # -d:sonar.verbose=true
           # /d:sonar.javascript.lcov.reportPaths="$lcovInfoPath" `
