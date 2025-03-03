@@ -58,7 +58,7 @@ jobs:
               $content = Get-Content $coverageFile
         
               # Replace backslashes with forward slashes
-              $updatedContent = $content -replace '\\', '/'
+              $updatedContent = $content -replace '/', '\'
               
               # Write the updated content back to the file
               Set-Content $coverageFile $updatedContent
