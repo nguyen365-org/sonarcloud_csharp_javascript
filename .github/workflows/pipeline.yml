@@ -47,7 +47,9 @@ jobs:
       - name: Verify Jest Coverage Report
         shell: pwsh
         run: |
-          if (!(Test-Path "coverage\lcov.info")) {
+          $coverageFile = "coverage\lcov.info"
+
+          if (!(Test-Path $coverageFile)) {
               Write-Host "JavaScript coverage file NOT found!"
               exit 1
           } else {
