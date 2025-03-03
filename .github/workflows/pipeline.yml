@@ -94,7 +94,7 @@ jobs:
           /d:sonar.sources=WebApplication\Scripts `
           /d:sonar.tests=WebApplication\Tests `
           /d:sonar.javascript.lcov.reportPaths=$lcovInfoPath  `
-          /d:sonar.exclusions="jest.config.js"
+          /d:sonar.exclusions="jest.config.js,normalizePaths.js,**/lcov-report/**"
           # -d:sonar.verbose=true
           # /d:sonar.javascript.lcov.reportPaths="$lcovInfoPath" `
           
