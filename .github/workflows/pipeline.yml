@@ -40,9 +40,12 @@ jobs:
         working-directory: WebApplication/Scripts
 
       # Run Jest Tests & Generate Coverage Report (Outputs: ./coverage/lcov.info)
-      - name: Run Jest tests
-        run: npm test
-        working-directory: WebApplication/Scripts
+      # - name: Run Jest tests
+      #   run: npm test
+      #   working-directory: WebApplication/Scripts
+
+      - name: Run Jest Tests with Coverage
+        run: npm test -- --coverage --coverageReporters=lcov --coverageDirectory=.
 
       - name: Verify Jest Coverage Report
         shell: pwsh
@@ -105,7 +108,7 @@ jobs:
           /d:sonar.scanner.scanAll=true `
           /d:sonar.sources=WebApplication\Scripts `
           /d:sonar.tests=WebApplication\Tests `
-          /d:sonar.javascript.lcov.reportPaths=.\coverage\lcov.info  `
+          /d:sonar.javascript.lcov.reportPaths=lcov.info  `
           /d:sonar.exclusions="jest.config.js,normalizePaths.js,**/lcov-report/**"
           # -d:sonar.verbose=true
           # /d:sonar.javascript.lcov.reportPaths="$lcovInfoPath" `
