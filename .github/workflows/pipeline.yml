@@ -37,7 +37,6 @@ jobs:
 
       - name: Install JavaScript dependencies
         run: npm install
-        working-directory: WebApplication/Scripts
 
       # Run Jest Tests & Generate Coverage Report (Outputs: ./coverage/lcov.info)
       # - name: Run Jest tests
