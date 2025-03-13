@@ -67,6 +67,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="operation6.js" />
+    <Content Include="operation6.test.js" />
     <Content Include="scripts\operation5.js" />
     <Content Include="tests\operation5.test.js" />
     <Content Include="Web.config" />
