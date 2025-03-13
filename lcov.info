@@ -43,3 +43,16 @@ LH:2
 BRF:0
 BRH:0
 end_of_record
+TN:
+SF:web.application\scripts\operation4.js
+FN:1,power
+FNF:1
+FNH:1
+FNDA:1,power
+DA:2,1
+DA:4,1
+LF:2
+LH:2
+BRF:0
+BRH:0
+end_of_record
