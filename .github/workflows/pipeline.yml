@@ -85,10 +85,10 @@ jobs:
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
           /d:sonar.cs.opencover.reportsPaths="coverage.opencover.xml" `
           /d:sonar.scanner.scanAll=true `
-          /d:sonar.sources=WebApplication\Scripts `
-          /d:sonar.tests=WebApplication\Tests `
           /d:sonar.javascript.lcov.reportPaths=lcov.info  `
           /d:sonar.exclusions="jest.config.js,normalizePaths.js,**/lcov-report/**"
+          # /d:sonar.sources=WebApplication\Scripts `
+          # /d:sonar.tests=WebApplication\Tests `
           # -d:sonar.verbose=true
           # /d:sonar.javascript.lcov.reportPaths="$lcovInfoPath" `
           
