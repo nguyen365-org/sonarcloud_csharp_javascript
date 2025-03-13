@@ -44,8 +44,8 @@ jobs:
       #   working-directory: WebApplication/Scripts
 
       - name: Run Jest Tests with Coverage
-        run: npm test -- --coverage 
-      #  run: npm test -- --coverage --coverageReporters=lcov --coverageDirectory=.
+      #  run: npm test -- --coverage 
+        run: npm test -- --coverage --coverageReporters=lcov --coverageDirectory=.
 
       # # SonarQube scan
       # - name: SonarQube Scan JavaScript
