@@ -15,7 +15,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:.\WebApplication\Scripts\operation2.js
+SF:C:\actions-runner\_work\sonarcloud_csharp_javascript\sonarcloud_csharp_javascript\WebApplication\Scripts\operation2.js
 FN:1,multiply
 FN:4,divide
 FNF:2
