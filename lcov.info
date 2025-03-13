@@ -1,5 +1,5 @@
 TN:
-SF:.\operation.js
+SF:./operation.js
 FN:1,add
 FN:4,subtract
 FNF:2
@@ -15,7 +15,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:C:\actions-runner\_work\sonarcloud_csharp_javascript\sonarcloud_csharp_javascript\WebApplication\Scripts\operation2.js
+SF:~/WebApplication/Scripts/operation2.js
 FN:1,multiply
 FN:4,divide
 FNF:2
